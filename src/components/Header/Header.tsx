@@ -2,13 +2,20 @@ import React, {FC, PropsWithChildren} from 'react';
 
 import css from "./Header.module.css"
 import {Link} from "react-router-dom";
-import {useAppSelector} from "../../hooks/reduxHooks";
+import {useAppDispatch, useAppSelector} from "../../hooks/reduxHooks";
+import {authService} from "../../services/authService";
+import {authActions} from "../../redux/slices/authSlice";
 
 interface IProps extends PropsWithChildren {
 }
 
 const Header: FC<IProps> = () => {
     const {me} = useAppSelector(state => state.auth);
+    const dispatch = useAppDispatch();
+
+    if(authService.getAccessToken() && !me) {
+        dispatch(authActions.me());
+    }
 
     return (
         <div className={css.Header}>
